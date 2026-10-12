@@ -1,0 +1,31 @@
+\section{Results}
+\label{sec:results}
+
+\begin{table}[t]
+  \centering
+  \small
+  \setlength{\tabcolsep}{3.2pt}
+  \resizebox{\linewidth}{!}{\input{tables/main}}
+  \caption{\textbf{Accuracy (\%) by second input}, 200 questions per task (chance: 50 / 29 / 50). Best per column in bold. The last row is how often the model gives the answer the misleading state implies. $^\dagger$Qwen3-VL-8B: 100 questions per task.}
+  \label{tab:main}
+\end{table}
+
+\paragraph{Perfect imagination helps a lot.} With the oracle imagined state, accuracy rises on every task for both models (\cref{tab:main}): by 25--30 points on viewpoint, about 20 on rearrangement, and 27--30 on physical outcome. The benefit needs a model that can read the imagined state: the smaller Qwen2.5-VL-3B is near chance in every condition, including the imagined view alone (viewpoint: 52.5\%, against 90--98\% on the hardest viewpoint questions for the larger models), so it gains little from the oracle (47.5\,$\rightarrow$\,55.5). An unrelated imagined state (``another question's state'') never helps: it matches the image-only baseline or lowers it (Qwen3-VL-8B, physical outcome: 65.5\,$\rightarrow$\,54.0). The gain comes from the content of the image, not from having a second image.
+
+\paragraph{When does text reasoning suffice?} Describing the change in words first (``cot'', about 530 generated tokens per answer for Qwen3-VL-8B, against fewer than 10 otherwise) helps less than the oracle on viewpoint (Qwen3-VL-8B on the same 100 questions: 61 vs.\ 72) and hurts on physical outcome (52, below the image-only 68; oracle 95). On rearrangement, however, it beats the oracle (64 vs.\ 46). Its reasoning rewrites ``closest to A after A and B trade places'' as ``closest to B's current position, apart from A'', which can be read from the original image without imagining anything. Text suffices when a question can be re-expressed in terms of the visible scene; when it cannot, as for a new viewpoint or a physical outcome, the imagined state is what helps. Qwen2.5-VL-7B gains less from text on every task (\cref{tab:main}).
+
+\paragraph{The model uses the imagined state.} A misleading imagined state drives accuracy far below the image-only baseline on viewpoint (48.5\,$\rightarrow$\,19.5 for Qwen3-VL-8B) and physical outcome (65.5\,$\rightarrow$\,19.5); the model then gives the answer the misleading state implies 80.5\% of the time on both tasks. Qwen2.5-VL-7B shows the same effect on viewpoint (48.0\,$\rightarrow$\,24.5; follows 75.5\%) and a weaker one on physical outcome (50.0\,$\rightarrow$\,42.5; follows 57.5\%). The visual intermediate state therefore plays a causal role. The effect is weak on rearrangement, where judging the closest object in a perspective image is itself hard, so the image is less decisive even when correct.
+
+\paragraph{The seen image competes with the imagined one.} With the original image only, both models answer viewpoint questions from their current view: accuracy is 78--93\% when the answer does not change after moving but 3--19\% when it does, matching the egocentric bias reported by Wang \etal~\cite{wang2026egocentric}. Given the imagined view \emph{alone}, they solve these hard cases (90--98\%). Given both images, they fall back to 53--61\%: the original image pulls the answer back towards the current view. A method that produces a visual intermediate state must therefore also get the model to rely on it.
+
+\paragraph{How faithful must imagination be?} \Cref{fig:noise} adds Gaussian noise to every object's position before rendering the oracle. Viewpoint and rearrangement are forgiving: with $\sigma{=}1$\,m, Qwen3-VL-8B still reaches 70.0 and 41.0, well above its image-only 48.5 and 31.0 (Qwen2.5-VL-7B: 67.0 and 39.5 vs.\ 48.0 and 32.5). Physical outcome is fragile, and accuracy follows how often the noisy state still implies the right outcome, falling to chance by $\sigma{=}0.5$\,m.
+
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figs/qual.pdf}
+  \caption{\textbf{One question, four second images} (Qwen3-VL-8B, actual answers). ``Walk a quarter turn to your right: is the green cylinder left or right of the red sphere?'' (answer: left). The model's own imagined state piles the objects together, so it does not help; the oracle does, and the misleading state flips the answer back.}
+  \label{fig:qual}
+\end{figure}
+
+\paragraph{The model's own imagination is limited by perception.} When the model writes the scene down and we render the change, accuracy stays within a few points of the image-only baseline on viewpoint and rearrangement and falls below it on physical outcome (\cref{tab:main}, ``own imagined state''; \cref{fig:qual}). Its reconstruction is worse than an oracle perturbed by 1\,m of noise (viewpoint: 52.0 vs.\ 70.0), because its errors are not random: it implies the correct viewpoint answer only 65\% of the time, and rescaling its layout to the true scene size does not change that (66\%). The failure is perception, not reasoning. On physical outcome, Qwen3-VL-8B answers correctly 96\% of the time when its own reconstruction implies the right outcome and 7.5\% when it does not, following its imagined state 94.5\% of the time, but its reconstruction is right only 53.5\% of the time.

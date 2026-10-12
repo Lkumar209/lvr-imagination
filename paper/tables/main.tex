@@ -1,0 +1,16 @@
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{3}{c}{Qwen3-VL-8B} & \multicolumn{3}{c}{Qwen2.5-VL-7B} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Second input & View & Swap & Stab. & View & Swap & Stab. \\
+\midrule
+Original image only & 48.5 & 31.0 & 65.5 & 48.0 & 32.5 & 50.0 \\
++ describe the change in text$^\dagger$ & 61.0 & \textbf{64.0} & 52.0 & 56.0 & 38.0 & 46.5 \\
++ own imagined state & 52.0 & 36.0 & 55.0 & 52.5 & 37.0 & 46.5 \\
++ oracle imagined state & \textbf{78.5} & 51.5 & \textbf{93.0} & \textbf{76.0} & \textbf{51.5} & \textbf{80.0} \\
++ another question's state & 50.0 & 34.5 & 54.0 & 49.5 & 28.0 & 49.5 \\
+\midrule
++ misleading imagined state & 19.5 & 35.5 & 19.5 & 24.5 & 34.5 & 42.5 \\
+\quad \emph{answers as the misleading state implies} & 80.5 & 28.0 & 80.5 & 75.5 & 36.5 & 57.5 \\
+\bottomrule
+\end{tabular}

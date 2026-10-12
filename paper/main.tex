@@ -1,0 +1,62 @@
+% WACV 2027 Paper Template
+% based on the ICCV 2025 template (https://media.eventhosts.cc/Conferences/ICCV2025/ICCV2025-Author-Kit-Feb.zip) with
+% WACV-specific details (e.g., 2 tracks) from the WACV 2025 template (https://www.dropbox.com/scl/fi/su44zgdhrzik26p2xu37k/WACV-2025-Author-Kit-Template.zip?rlkey=5qcfimjhxnmx3wlyk7yhk8wg7&dl=0)
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+\usepackage[review,algorithms]{wacv}      % To produce the REVIEW version for the algorithms track
+% \usepackage[review,applications]{wacv}      % To produce the REVIEW version for the applications track
+% \usepackage[review,datasets]{wacv}      % To produce the REVIEW version for the datasets track
+% \usepackage{wacv}              % To produce the CAMERA-READY version
+%\usepackage[pagenumbers]{wacv} % To force page numbers, e.g. for an arXiv version
+
+% Import additional packages in the preamble file, before hyperref
+\input{preamble}
+
+% It is strongly recommended to use hyperref, especially for the review version.
+% hyperref with option pagebackref eases the reviewers' job.
+% Please disable hyperref *only* if you encounter grave issues, 
+% e.g. with the file validation for the camera-ready version.
+%
+% If you comment hyperref and then uncomment it, you should delete *.aux before re-running LaTeX.
+% (Or just hit 'q' on the first LaTeX run, let it finish, and you should be clear).
+\definecolor{wacvblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=wacvblue]{hyperref}
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\wacvPaperID{*****} % *** Enter the WACV Paper ID here
+\def\confName{WACV}
+\def\confYear{2027}
+
+
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{Would Imagination Help? An Oracle Study of Visual Intermediate States\\for Spatial and Physical Reasoning in VLMs}
+
+%%%%%%%%% AUTHORS - PLEASE UPDATE
+\author{Anonymous WACV LVR Workshop Submission}
+
+\begin{document}
+% teaser directly under the title block, as in CVPR-style papers
+\twocolumn[{\renewcommand\twocolumn[1][]{#1}\maketitle
+\begin{center}
+  \vspace{-1.5em}
+  \includegraphics[width=\linewidth]{figs/teaser.pdf}
+  \captionof{figure}{\textbf{Each question asks the model to picture a change it cannot see.} Because our scenes are rendered from an exact 3D description, we can render the state the question asks about (``imagined (oracle)''), a plausible but misleading version of it, or the model's own reconstruction, and give any of them back to the model as a second image.}
+  \label{fig:teaser}
+  \vspace{1em}
+\end{center}}]
+\input{sec/0_abstract}
+\input{sec/1_intro}
+\input{sec/2_related}
+\input{sec/3_benchmark}
+\input{sec/5_results}
+\input{sec/6_discussion}
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+
+
+\end{document}
