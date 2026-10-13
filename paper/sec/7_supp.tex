@@ -104,3 +104,12 @@ Other & \multicolumn{3}{l}{\footnotesize moves: 91 right, 75 left, 34 opposite; 
 
 \paragraph{Significance tests.} Exact McNemar tests on the questions both conditions share, Holm-corrected over all rows ($^*$: $p_{\mathrm{Holm}}<0.05$). A and B are the accuracies of the first and second condition named.
 {\small\input{tables/supp_significance}}
+
+\section{More examples}
+\label{sec:supp-examples}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/supp_examples.pdf}
+  \caption{\textbf{Two questions per task}, with Qwen3-VL-8B's actual answer under each second image (``seen'': the original image only). The examples include failures: on rearrangement the model answers wrongly even with the oracle, and its own reconstructions compress the scene into a cluster (viewpoint) or into a vertical, stable-looking stack (physical outcome).}
+  \label{fig:supp-examples}
+\end{figure}

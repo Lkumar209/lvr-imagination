@@ -9,6 +9,8 @@ import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+
+matplotlib.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42})   # embed TrueType, not Type 3 (PDF checkers reject Type 3)
 from PIL import Image  # noqa: E402
 
 PICK = [("viewpoint_00018", "Viewpoint change",

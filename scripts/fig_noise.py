@@ -14,6 +14,8 @@ import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+
+matplotlib.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42})   # embed TrueType, not Type 3 (PDF checkers reject Type 3)
 import numpy as np  # noqa: E402
 
 TASKS = [("viewpoint", "Viewpoint"), ("swap", "Rearrangement"), ("stability", "Physical outcome")]
