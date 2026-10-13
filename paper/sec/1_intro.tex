@@ -10,4 +10,4 @@ We isolate that one factor. We build scenes in which the imagined state a questi
   \item \textbf{How faithful must imagination be, and how close do models get on their own?} We degrade the oracle with controlled position noise, and we let the model build its own imagined state by writing down the scene and rendering it.
 \end{enumerate}
 
-On two open VLMs, a perfect imagined state raises accuracy by 20--30 points, a misleading one drops it far below the image-only baseline, and models gain little from their own imagined states because they misperceive spatial relations. We also find that the seen image competes with the imagined one, which halves the benefit on the questions where imagination matters most.
+On three open VLMs from two families, a perfect imagined state raises accuracy on every task (by up to 30 points), a misleading one drops it far below the image-only baseline, and models gain little from their own imagined states because they misperceive spatial relations. We also find that the seen image competes with the imagined one, which halves the benefit on the questions where imagination matters most.

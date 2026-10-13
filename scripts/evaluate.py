@@ -52,19 +52,30 @@ COT = {
 MAX_TOKENS = {"cot": 1024}
 DEFAULT_MAX_TOKENS = 48
 
+# Paraphrased wording for the prompt-robustness check (--prompt-variant alt). Same
+# information, different phrasing, and the options listed in reverse order.
+ALT_SECOND_IMAGE = {
+    "viewpoint": "Image 2 is a rendering of this scene as it looks from the position the question asks you to walk to.",
+    "swap": "Image 2 is a rendering of this scene once the two named objects have swapped positions.",
+    "stability": "Image 2 is a rendering of this scene after the blocks were let go and stopped moving.",
+}
+ALT_ONLY_IMAGE = {k: v.replace("Image 2 is a rendering of this scene", "This image is a rendering of a scene")
+                  for k, v in ALT_SECOND_IMAGE.items()}
+
 
 # ------------------------------------------------------------------ prompts
 
-def build(item, condition, root, shuffle_pool, recon=None):
+def build(item, condition, root, shuffle_pool, recon=None, variant="default"):
     img = lambda st, it=item: os.path.join(root, it[st]["image"])  # noqa: E731
-    opts = " / ".join(item["choices"])
+    alt = variant == "alt"
+    opts = " / ".join(reversed(item["choices"]) if alt else item["choices"])
     task = item["task"]
     if condition == "recon" and not (recon or {}).get(item["id"]):
         condition = "direct"                       # reconstruction failed: no imagined image
     if condition in ("direct", "cot"):
-        images, intro = [img("original")], "The image shows a scene."
+        images, intro = [img("original")], ("Here is a rendered scene." if alt else "The image shows a scene.")
     elif condition == "oracle_only":
-        images, intro = [img("imagined")], ONLY_IMAGE[task]
+        images, intro = [img("imagined")], (ALT_ONLY_IMAGE if alt else ONLY_IMAGE)[task]
     else:
         if condition == "oracle":
             second = img("imagined")
@@ -77,12 +88,16 @@ def build(item, condition, root, shuffle_pool, recon=None):
         else:
             raise ValueError(condition)
         images = [img("original"), second]
-        intro = "The first image shows the current scene. " + SECOND_IMAGE[task]
+        intro = ("Image 1 is the scene as it is now. " + ALT_SECOND_IMAGE[task] if alt else
+                 "The first image shows the current scene. " + SECOND_IMAGE[task])
     if condition == "cot":
         tail = f"{COT[task]} End your reply with a final line of the form 'Answer: <option>'."
+    elif alt:
+        tail = "Respond with exactly one line: 'Answer: ' followed by one of the options."
     else:
         tail = "Reply with only a single line of the form 'Answer: <option>'."
-    text = f"{intro}\n\n{item['question']}\nOptions: {opts}\n\n{tail}"
+    label = "Choose from" if alt else "Options"
+    text = f"{intro}\n\n{item['question']}\n{label}: {opts}\n\n{tail}"
     return images, text
 
 
@@ -204,6 +219,10 @@ def main():
     p.add_argument("--limit", type=int, help="first N questions per task (smoke tests)")
     p.add_argument("--out", default="results")
     p.add_argument("--recon", help="recon/<tag> folder to use for the recon condition")
+    p.add_argument("--max-tokens", type=int, help="override the generation limit for every condition")
+    p.add_argument("--redo-truncated", action="store_true",
+                   help="first drop rows that hit the old limit (kept in <cond>.truncated.jsonl), then rerun them")
+    p.add_argument("--prompt-variant", choices=["default", "alt"], default="default")
     a = p.parse_args()
 
     items = [json.loads(line) for line in open(os.path.join(a.root, "questions.jsonl"))]
@@ -222,10 +241,21 @@ def main():
         call = Mock(items, a.root)
 
     tag = a.model.split("/")[-1] + ("" if a.quant == "none" else f"-q{a.quant}")
+    if a.prompt_variant != "default":
+        tag += f"-prompt_{a.prompt_variant}"
     outdir = os.path.join(a.out, os.path.basename(os.path.normpath(a.root)), tag)
     os.makedirs(outdir, exist_ok=True)
     for cond in a.conditions:
         path = os.path.join(outdir, f"{cond}.jsonl")
+        limit = a.max_tokens or MAX_TOKENS.get(cond, DEFAULT_MAX_TOKENS)
+        if a.redo_truncated and os.path.exists(path):
+            rows = [json.loads(line) for line in open(path)]
+            cut = [r for r in rows if r["gen_tokens"] >= MAX_TOKENS.get(cond, DEFAULT_MAX_TOKENS)]
+            with open(path.replace(".jsonl", ".truncated.jsonl"), "a") as g:
+                g.writelines(json.dumps(r) + "\n" for r in cut)
+            with open(path, "w") as g:
+                g.writelines(json.dumps(r) + "\n" for r in rows if r not in cut)
+            print(f"{cond}: rerunning {len(cut)} truncated answers with max_tokens={limit}")
         done = set()
         if os.path.exists(path):
             done = {json.loads(line)["id"] for line in open(path)}
@@ -233,13 +263,13 @@ def main():
         t0 = time.time()
         with open(path, "a") as f:
             for n, it in enumerate(todo, 1):
-                images, text = build(it, cond, a.root, pool, recon)
-                reply, n_tok = call(images, text, MAX_TOKENS.get(cond, DEFAULT_MAX_TOKENS))
+                images, text = build(it, cond, a.root, pool, recon, a.prompt_variant)
+                reply, n_tok = call(images, text, limit)
                 pred, strict = parse(reply, it["choices"])
                 rec = {"id": it["id"], "task": it["task"], "condition": cond, "pred": pred,
                        "answer": it["answer"], "wrong_answer": it["wrong_answer"],
                        "correct": pred == it["answer"], "parsed_strict": strict,
-                       "gen_tokens": n_tok, "reply": reply, "meta": it.get("meta", {})}
+                       "gen_tokens": n_tok, "max_tokens": limit, "reply": reply, "meta": it.get("meta", {})}
                 if cond == "recon":
                     rec["recon_failed"] = not recon.get(it["id"])
                     if cond == "recon" and not rec["recon_failed"]:

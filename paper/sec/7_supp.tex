@@ -1,0 +1,106 @@
+\section{Prompts}
+\label{sec:supp-prompts}
+All prompts are shown for the viewpoint question of \cref{fig:teaser}; the other tasks differ only in the task-specific sentence, listed after. Images are passed before the text.
+
+\paragraph{direct} (one image: the original)
+\begingroup\footnotesize\begin{verbatim}
+The image shows a scene.
+
+Imagine you walk a quarter of the way around the scene to your right, keeping
+your eyes on the center of the scene. From that new viewpoint, is the orange
+cylinder to the left or to the right of the red sphere?
+Options: left / right
+
+Reply with only a single line of the form 'Answer: <option>'.
+\end{verbatim}
+\endgroup
+\paragraph{oracle, wrong, shuffled, recon} (two images: the original, then the imagined state). The wording is identical across these four conditions.
+\begingroup\footnotesize\begin{verbatim}
+The first image shows the current scene. The second image shows the scene from
+the new viewpoint described in the question.
+
+Imagine you walk a quarter of the way around the scene to your right, keeping
+your eyes on the center of the scene. From that new viewpoint, is the orange
+cylinder to the left or to the right of the red sphere?
+Options: left / right
+
+Reply with only a single line of the form 'Answer: <option>'.
+\end{verbatim}
+\endgroup
+\paragraph{cot} The last line of \emph{direct} is replaced by a task-specific instruction followed by \texttt{End your reply with a final line of the form 'Answer: <option>'.} The instructions are:
+\begingroup\footnotesize\begin{verbatim}
+viewpoint: First describe, step by step, how the scene would look from the new
+viewpoint, then answer.
+swap: First describe, step by step, where every object would be after the
+swap, then answer.
+stability: First reason, step by step, about where the weight of the upper
+blocks rests and what would happen after release, then answer.
+\end{verbatim}
+\endgroup
+\paragraph{Second-image sentence for the other tasks.}
+\begingroup\footnotesize
+\begin{verbatim}
+swap:      The second image shows the scene after the two objects have
+           traded places.
+stability: The second image shows the scene after the stack was released
+           and everything came to rest.
+\end{verbatim}
+\endgroup
+\paragraph{Reconstruction (recon, first stage).} Viewpoint and rearrangement:
+\begingroup\footnotesize\begin{verbatim}
+List every object in the image. For each one give its name as '<color>
+<shape>' (shape is one of: cube, sphere, cylinder) and where it stands on the
+floor, seen from above, in meters: x runs from left (negative) to right
+(positive) as seen in the image, and z runs from far away (negative) to close
+to the camera (positive). All objects are within about 2.5 m of the center of
+the scene. Reply with only a JSON list, for example [{"name": "red cube", "x":
+0.5, "z": -1.0}, {"name": "blue sphere", "x": -1.2, "z": 0.8}]
+\end{verbatim}
+\endgroup
+Physical outcome:
+\begingroup\footnotesize\begin{verbatim}
+Look at the stack of flat blocks (ignore any objects lying apart from the
+stack). List the blocks from the bottom of the stack to the top. For each give
+its color, its width in meters (blocks are 0.9 to 1.5 m wide), and the
+horizontal position of its center in meters, from left (negative) to right
+(positive) as seen in the image. Reply with only a JSON list, for example
+[{"color": "red", "width": 1.2, "x": 0.0}, {"color": "blue", "width": 1.0,
+"x": 0.3}]
+\end{verbatim}
+\endgroup
+Answers are parsed from the last \texttt{Answer:} line, falling back to the last option mentioned anywhere in the reply. Decoding is greedy; the answer limit is 48 new tokens. For \emph{cot} it is 1{,}024; answers that reached it were regenerated with 2{,}048, which under greedy decoding is equivalent to a 2{,}048 limit throughout. For Qwen3-VL-8B, 35 of the first 300 \emph{cot} answers reached 1{,}024 tokens; regenerating them left the number of correct answers unchanged (11), and 14 of them reached 2{,}048 as well, mostly by repeating themselves.
+
+\section{Dataset details}
+\label{sec:supp-data}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lccc}
+\toprule
+ & Viewpoint & Rearrangement & Physical outcome \\
+\midrule
+Questions & 200 & 200 & 200 \\
+Objects per scene & 4--6 (mean 5.0) & 5--6 (mean 5.5) & 3--4 blocks + 1--2 others \\
+Options & 2 & 3--4 & 2 \\
+Answer balance & 100 left / 100 right & -- & 100 stand / 100 fall \\
+Other & \multicolumn{3}{l}{\footnotesize moves: 91 right, 75 left, 34 opposite; 100 flip the current-view answer} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\noindent Rearrangement: nearest/second-nearest distance ratio at least 1.4 (median 1.6). Physical outcome: 133 three-block and 67 four-block stacks; unstable stacks fail at the base (69) or at the second block (31). The misleading state is another viewpoint with the opposite answer (viewpoint), a swap with a different partner and a different answer (rearrangement), or the opposite outcome (physical outcome; for stable stacks, the top block falls towards its overhang).
+
+\section{Additional results}
+\label{sec:supp-results}
+
+\paragraph{Egocentric bias by model.} Viewpoint accuracy (\%) on questions whose answer is the \emph{same} from the current view and from the new one, and on those where it \emph{flips}. All models answer from the current view when given only the original image; the imagined view alone resolves this for the 7--8B models, and adding the original image back brings much of the bias back.
+\begin{center}\small\input{tables/supp_egocentric}\end{center}
+
+\paragraph{Prompt robustness.} Qwen3-VL-8B on the first 50 questions per task, with the original prompt and with a paraphrase that rewords every instruction and lists the options in reverse order. Individual answers change, most on rearrangement, but the oracle helps and the misleading state hurts under both wordings.
+\begin{center}\small\input{tables/supp_prompt}\end{center}
+
+\paragraph{A smaller model.} Qwen2.5-VL-3B (bf16) stays near chance in every condition, including the imagined state alone, so it cannot benefit from imagination.
+\begin{center}\small\input{tables/supp_small}\end{center}
+
+\paragraph{Rescaled reconstructions.} Rescaling Qwen3-VL-8B's reconstructed layout about its centroid so that it spans the scene (no model calls; same replies) changes accuracy from 52.0 to 54.0 on viewpoint and from 36.0 to 41.5 on rearrangement, and the share of reconstructions that imply the correct viewpoint answer from 64.5\% to 65.6\%: the errors are in the relative layout, not the overall scale.
+
+\paragraph{Significance tests.} Exact McNemar tests on the questions both conditions share, Holm-corrected over all rows ($^*$: $p_{\mathrm{Holm}}<0.05$). A and B are the accuracies of the first and second condition named.
+{\small\input{tables/supp_significance}}

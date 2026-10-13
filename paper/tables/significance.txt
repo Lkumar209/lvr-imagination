@@ -1,0 +1,64 @@
+claim                          model          task          n      A      B         p    p_holm
+oracle > direct                Qwen3-VL-8B    viewpoint   200   48.5   78.5   1.3e-15   7.4e-14  *
+wrong < direct                 Qwen3-VL-8B    viewpoint   200   48.5   19.5     7e-13   3.6e-11  *
+oracle > shuffled              Qwen3-VL-8B    viewpoint   200   50.0   78.5   1.4e-13   7.5e-12  *
+cot > direct                   Qwen3-VL-8B    viewpoint   100   46.0   61.0     0.028      0.72
+cot vs oracle                  Qwen3-VL-8B    viewpoint   100   61.0   72.0      0.14         1
+recon vs direct                Qwen3-VL-8B    viewpoint   200   48.5   52.0      0.36         1
+oracle > direct                Qwen3-VL-8B    swap        200   31.0   51.5   2.3e-09     1e-07  *
+wrong < direct                 Qwen3-VL-8B    swap        200   31.0   35.5      0.22         1
+oracle > shuffled              Qwen3-VL-8B    swap        200   34.5   51.5   1.4e-07   5.6e-06  *
+cot > direct                   Qwen3-VL-8B    swap        200   31.0   61.5   5.5e-11   2.7e-09  *
+cot vs oracle                  Qwen3-VL-8B    swap        200   61.5   51.5     0.022      0.61
+recon vs direct                Qwen3-VL-8B    swap        200   31.0   36.0      0.12         1
+oracle > direct                Qwen3-VL-8B    stability   200   65.5   93.0   3.8e-10   1.8e-08  *
+wrong < direct                 Qwen3-VL-8B    stability   200   65.5   19.5   3.6e-16   2.1e-14  *
+oracle > shuffled              Qwen3-VL-8B    stability   200   54.0   93.0   1.2e-17   7.4e-16  *
+cot > direct                   Qwen3-VL-8B    stability   100   68.0   52.0     0.017      0.46
+cot vs oracle                  Qwen3-VL-8B    stability   100   52.0   95.0     7e-11   3.4e-09  *
+recon vs direct                Qwen3-VL-8B    stability   200   65.5   55.0      0.11         1
+imagined alone > both (flip)   Qwen3-VL-8B    viewpoint   100   61.0   90.0     3e-08   1.3e-06  *
+oracle@1m > direct             Qwen3-VL-8B    viewpoint   200   48.5   70.0   9.1e-09     4e-07  *
+oracle@1m > recon              Qwen3-VL-8B    viewpoint   200   52.0   70.0   7.1e-06   0.00025  *
+oracle > direct                Qwen2.5-VL-7B  viewpoint   200   48.0   76.0   2.8e-17   1.6e-15  *
+wrong < direct                 Qwen2.5-VL-7B  viewpoint   200   48.0   24.5   1.4e-14     8e-13  *
+oracle > shuffled              Qwen2.5-VL-7B  viewpoint   200   49.5   76.0   2.3e-14   1.3e-12  *
+cot > direct                   Qwen2.5-VL-7B  viewpoint   200   48.0   56.0     0.033      0.82
+cot vs oracle                  Qwen2.5-VL-7B  viewpoint   200   56.0   76.0   2.4e-06   8.9e-05  *
+recon vs direct                Qwen2.5-VL-7B  viewpoint   200   48.0   52.5      0.14         1
+oracle > direct                Qwen2.5-VL-7B  swap        200   32.5   51.5   1.4e-08   5.9e-07  *
+wrong < direct                 Qwen2.5-VL-7B  swap        200   32.5   34.5      0.64         1
+oracle > shuffled              Qwen2.5-VL-7B  swap        200   28.0   51.5   6.4e-11   3.1e-09  *
+cot > direct                   Qwen2.5-VL-7B  swap        200   32.5   38.0      0.23         1
+cot vs oracle                  Qwen2.5-VL-7B  swap        200   38.0   51.5    0.0032     0.092
+recon vs direct                Qwen2.5-VL-7B  swap        200   32.5   37.0      0.28         1
+oracle > direct                Qwen2.5-VL-7B  stability   200   50.0   80.0   4.1e-07   1.6e-05  *
+wrong < direct                 Qwen2.5-VL-7B  stability   200   50.0   42.5       0.3         1
+oracle > shuffled              Qwen2.5-VL-7B  stability   200   49.5   80.0   8.1e-12   4.1e-10  *
+cot > direct                   Qwen2.5-VL-7B  stability   200   50.0   46.5      0.42         1
+cot vs oracle                  Qwen2.5-VL-7B  stability   200   46.5   80.0   1.4e-09   6.6e-08  *
+recon vs direct                Qwen2.5-VL-7B  stability   200   50.0   46.5      0.61         1
+imagined alone > both (flip)   Qwen2.5-VL-7B  viewpoint   100   53.0   98.0   5.7e-14   3.1e-12  *
+oracle@1m > direct             Qwen2.5-VL-7B  viewpoint   200   48.0   67.0   3.2e-08   1.3e-06  *
+oracle@1m > recon              Qwen2.5-VL-7B  viewpoint   200   52.5   67.0    0.0002    0.0063  *
+oracle > direct                InternVL3-8B   viewpoint   200   51.0   62.0   0.00011    0.0037  *
+wrong < direct                 InternVL3-8B   viewpoint   200   51.0   37.0   2.5e-07   9.6e-06  *
+oracle > shuffled              InternVL3-8B   viewpoint   200   51.0   62.0    0.0002    0.0062  *
+cot > direct                   InternVL3-8B   viewpoint   100   50.0   62.0     0.096         1
+cot vs oracle                  InternVL3-8B   viewpoint   100   62.0   56.0      0.41         1
+recon vs direct                InternVL3-8B   viewpoint   200   51.0   48.0      0.15         1
+oracle > direct                InternVL3-8B   swap        200   30.5   41.5    0.0013     0.038  *
+wrong < direct                 InternVL3-8B   swap        200   30.5   34.0      0.35         1
+oracle > shuffled              InternVL3-8B   swap        200   35.0   41.5     0.047         1
+cot > direct                   InternVL3-8B   swap        100   34.0   36.0      0.85         1
+cot vs oracle                  InternVL3-8B   swap        100   36.0   43.0      0.26         1
+recon vs direct                InternVL3-8B   swap        200   30.5   35.0      0.34         1
+oracle > direct                InternVL3-8B   stability   200   50.0   58.5   1.5e-05   0.00053  *
+wrong < direct                 InternVL3-8B   stability   200   50.0   50.0         1         1
+oracle > shuffled              InternVL3-8B   stability   200   50.0   58.5   1.5e-05   0.00053  *
+cot > direct                   InternVL3-8B   stability   100   50.0   62.0     0.081         1
+cot vs oracle                  InternVL3-8B   stability   100   62.0   61.0         1         1
+recon vs direct                InternVL3-8B   stability   200   50.0   51.0       0.5         1
+imagined alone > both (flip)   InternVL3-8B   viewpoint   100   29.0   97.0   6.8e-21   4.1e-19  *
+
+A = first condition named, B = second; exact McNemar, Holm-corrected over all rows.

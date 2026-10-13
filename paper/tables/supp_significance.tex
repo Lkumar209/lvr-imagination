@@ -1,0 +1,68 @@
+\begin{longtable}{llllrrrr}
+\toprule
+Comparison (A vs.\ B) & Model & Task & & $n$ & A & B & $p_{\mathrm{Holm}}$ \\
+\midrule
+\endhead
+Oracle $>$ Img. & Qwen3-VL-8B & viewpoint & & 200 & 48.5 & 78.5 & $<$0.001$^*$ \\
+Misl. $<$ Img. & Qwen3-VL-8B & viewpoint & & 200 & 48.5 & 19.5 & $<$0.001$^*$ \\
+Oracle $>$ Unrel. & Qwen3-VL-8B & viewpoint & & 200 & 50.0 & 78.5 & $<$0.001$^*$ \\
+Text vs.\ Img. & Qwen3-VL-8B & viewpoint & & 100 & 46.0 & 61.0 & 0.716 \\
+Text vs.\ Oracle & Qwen3-VL-8B & viewpoint & & 100 & 61.0 & 72.0 & 1.000 \\
+Own vs.\ Img. & Qwen3-VL-8B & viewpoint & & 200 & 48.5 & 52.0 & 1.000 \\
+Oracle $>$ Img. & Qwen3-VL-8B & swap & & 200 & 31.0 & 51.5 & $<$0.001$^*$ \\
+Misl. $<$ Img. & Qwen3-VL-8B & swap & & 200 & 31.0 & 35.5 & 1.000 \\
+Oracle $>$ Unrel. & Qwen3-VL-8B & swap & & 200 & 34.5 & 51.5 & $<$0.001$^*$ \\
+Text vs.\ Img. & Qwen3-VL-8B & swap & & 200 & 31.0 & 61.5 & $<$0.001$^*$ \\
+Text vs.\ Oracle & Qwen3-VL-8B & swap & & 200 & 61.5 & 51.5 & 0.606 \\
+Own vs.\ Img. & Qwen3-VL-8B & swap & & 200 & 31.0 & 36.0 & 1.000 \\
+Oracle $>$ Img. & Qwen3-VL-8B & stability & & 200 & 65.5 & 93.0 & $<$0.001$^*$ \\
+Misl. $<$ Img. & Qwen3-VL-8B & stability & & 200 & 65.5 & 19.5 & $<$0.001$^*$ \\
+Oracle $>$ Unrel. & Qwen3-VL-8B & stability & & 200 & 54.0 & 93.0 & $<$0.001$^*$ \\
+Text vs.\ Img. & Qwen3-VL-8B & stability & & 100 & 68.0 & 52.0 & 0.464 \\
+Text vs.\ Oracle & Qwen3-VL-8B & stability & & 100 & 52.0 & 95.0 & $<$0.001$^*$ \\
+Own vs.\ Img. & Qwen3-VL-8B & stability & & 200 & 65.5 & 55.0 & 1.000 \\
+Imagined only $>$ both (flip) & Qwen3-VL-8B & viewpoint & & 100 & 61.0 & 90.0 & $<$0.001$^*$ \\
+Oracle@1\,m $>$ Img. & Qwen3-VL-8B & viewpoint & & 200 & 48.5 & 70.0 & $<$0.001$^*$ \\
+Oracle@1\,m $>$ Own & Qwen3-VL-8B & viewpoint & & 200 & 52.0 & 70.0 & $<$0.001$^*$ \\
+Oracle $>$ Img. & Qwen2.5-VL-7B & viewpoint & & 200 & 48.0 & 76.0 & $<$0.001$^*$ \\
+Misl. $<$ Img. & Qwen2.5-VL-7B & viewpoint & & 200 & 48.0 & 24.5 & $<$0.001$^*$ \\
+Oracle $>$ Unrel. & Qwen2.5-VL-7B & viewpoint & & 200 & 49.5 & 76.0 & $<$0.001$^*$ \\
+Text vs.\ Img. & Qwen2.5-VL-7B & viewpoint & & 200 & 48.0 & 56.0 & 0.821 \\
+Text vs.\ Oracle & Qwen2.5-VL-7B & viewpoint & & 200 & 56.0 & 76.0 & $<$0.001$^*$ \\
+Own vs.\ Img. & Qwen2.5-VL-7B & viewpoint & & 200 & 48.0 & 52.5 & 1.000 \\
+Oracle $>$ Img. & Qwen2.5-VL-7B & swap & & 200 & 32.5 & 51.5 & $<$0.001$^*$ \\
+Misl. $<$ Img. & Qwen2.5-VL-7B & swap & & 200 & 32.5 & 34.5 & 1.000 \\
+Oracle $>$ Unrel. & Qwen2.5-VL-7B & swap & & 200 & 28.0 & 51.5 & $<$0.001$^*$ \\
+Text vs.\ Img. & Qwen2.5-VL-7B & swap & & 200 & 32.5 & 38.0 & 1.000 \\
+Text vs.\ Oracle & Qwen2.5-VL-7B & swap & & 200 & 38.0 & 51.5 & 0.092 \\
+Own vs.\ Img. & Qwen2.5-VL-7B & swap & & 200 & 32.5 & 37.0 & 1.000 \\
+Oracle $>$ Img. & Qwen2.5-VL-7B & stability & & 200 & 50.0 & 80.0 & $<$0.001$^*$ \\
+Misl. $<$ Img. & Qwen2.5-VL-7B & stability & & 200 & 50.0 & 42.5 & 1.000 \\
+Oracle $>$ Unrel. & Qwen2.5-VL-7B & stability & & 200 & 49.5 & 80.0 & $<$0.001$^*$ \\
+Text vs.\ Img. & Qwen2.5-VL-7B & stability & & 200 & 50.0 & 46.5 & 1.000 \\
+Text vs.\ Oracle & Qwen2.5-VL-7B & stability & & 200 & 46.5 & 80.0 & $<$0.001$^*$ \\
+Own vs.\ Img. & Qwen2.5-VL-7B & stability & & 200 & 50.0 & 46.5 & 1.000 \\
+Imagined only $>$ both (flip) & Qwen2.5-VL-7B & viewpoint & & 100 & 53.0 & 98.0 & $<$0.001$^*$ \\
+Oracle@1\,m $>$ Img. & Qwen2.5-VL-7B & viewpoint & & 200 & 48.0 & 67.0 & $<$0.001$^*$ \\
+Oracle@1\,m $>$ Own & Qwen2.5-VL-7B & viewpoint & & 200 & 52.5 & 67.0 & 0.006$^*$ \\
+Oracle $>$ Img. & InternVL3-8B & viewpoint & & 200 & 51.0 & 62.0 & 0.004$^*$ \\
+Misl. $<$ Img. & InternVL3-8B & viewpoint & & 200 & 51.0 & 37.0 & $<$0.001$^*$ \\
+Oracle $>$ Unrel. & InternVL3-8B & viewpoint & & 200 & 51.0 & 62.0 & 0.006$^*$ \\
+Text vs.\ Img. & InternVL3-8B & viewpoint & & 100 & 50.0 & 62.0 & 1.000 \\
+Text vs.\ Oracle & InternVL3-8B & viewpoint & & 100 & 62.0 & 56.0 & 1.000 \\
+Own vs.\ Img. & InternVL3-8B & viewpoint & & 200 & 51.0 & 48.0 & 1.000 \\
+Oracle $>$ Img. & InternVL3-8B & swap & & 200 & 30.5 & 41.5 & 0.038$^*$ \\
+Misl. $<$ Img. & InternVL3-8B & swap & & 200 & 30.5 & 34.0 & 1.000 \\
+Oracle $>$ Unrel. & InternVL3-8B & swap & & 200 & 35.0 & 41.5 & 1.000 \\
+Text vs.\ Img. & InternVL3-8B & swap & & 100 & 34.0 & 36.0 & 1.000 \\
+Text vs.\ Oracle & InternVL3-8B & swap & & 100 & 36.0 & 43.0 & 1.000 \\
+Own vs.\ Img. & InternVL3-8B & swap & & 200 & 30.5 & 35.0 & 1.000 \\
+Oracle $>$ Img. & InternVL3-8B & stability & & 200 & 50.0 & 58.5 & $<$0.001$^*$ \\
+Misl. $<$ Img. & InternVL3-8B & stability & & 200 & 50.0 & 50.0 & 1.000 \\
+Oracle $>$ Unrel. & InternVL3-8B & stability & & 200 & 50.0 & 58.5 & $<$0.001$^*$ \\
+Text vs.\ Img. & InternVL3-8B & stability & & 100 & 50.0 & 62.0 & 1.000 \\
+Text vs.\ Oracle & InternVL3-8B & stability & & 100 & 62.0 & 61.0 & 1.000 \\
+Own vs.\ Img. & InternVL3-8B & stability & & 200 & 50.0 & 51.0 & 1.000 \\
+Imagined only $>$ both (flip) & InternVL3-8B & viewpoint & & 100 & 29.0 & 97.0 & $<$0.001$^*$ \\
+\bottomrule
+\end{longtable}
