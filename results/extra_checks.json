@@ -1,0 +1,24 @@
+{
+ "recon_standing_n": 189,
+ "recon_standing_says_stands": 184,
+ "recon_standing_says_stands_pct": 97.4,
+ "recon_top_quartile_says_stands_pct": 93.8,
+ "recon_change_mean": 5.8,
+ "recon_change_min": 2.0,
+ "recon_change_max": 11.9,
+ "fallen_change_mean": 8.6,
+ "fallen_change_min": 6.5,
+ "fallen_change_max": 12.3,
+ "shared_range": [
+  6.475705516581633,
+  11.86473612882653
+ ],
+ "shared_recon_n": 59,
+ "shared_recon_says_stands": 56,
+ "shared_recon_says_stands_pct": 94.9,
+ "shared_fallen_n": 99,
+ "shared_fallen_says_falls": 85,
+ "shared_fallen_says_falls_pct": 85.9,
+ "cot_swap_n": 200,
+ "cot_swap_partner_position": 198
+}

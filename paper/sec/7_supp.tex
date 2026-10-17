@@ -27,6 +27,13 @@ Options: left / right
 Reply with only a single line of the form 'Answer: <option>'.
 \end{verbatim}
 \endgroup
+\paragraph{oracle alone} (one image: the imagined state) The first line of \emph{direct} becomes:
+\begingroup\footnotesize\begin{verbatim}
+The image shows the scene from the new viewpoint described in the question.
+\end{verbatim}
+\endgroup
+\noindent and analogously for the other tasks (``The image shows the scene after\ldots'').
+
 \paragraph{cot} The last line of \emph{direct} is replaced by a task-specific instruction followed by \texttt{End your reply with a final line of the form 'Answer: <option>'.} The instructions are:
 \begingroup\footnotesize\begin{verbatim}
 viewpoint: First describe, step by step, how the scene would look from the new
@@ -68,6 +75,8 @@ horizontal position of its center in meters, from left (negative) to right
 "x": 0.3}]
 \end{verbatim}
 \endgroup
+When a reconstruction leaves out one of the two swapped objects, no imagined state can be rendered and the question is answered from the original image only. This happens on rearrangement for 18 (Qwen3-VL-8B), 3 (Qwen2.5-VL-7B) and 11 (InternVL3-8B) of 200 questions, and never on the other tasks.
+
 Answers are parsed from the last \texttt{Answer:} line, falling back to the last option mentioned anywhere in the reply. Decoding is greedy; the answer limit is 48 new tokens. For \emph{cot} it is 1{,}024; answers that reached it were regenerated with 2{,}048, which under greedy decoding is equivalent to a 2{,}048 limit throughout. For Qwen3-VL-8B, 35 of the first 300 \emph{cot} answers reached 1{,}024 tokens; regenerating them left the number of correct answers unchanged (11), and 14 of them reached 2{,}048 as well, mostly by repeating themselves.
 
 \paragraph{Use of language models.} Besides the VLMs under study, an LLM-based coding assistant was used to help implement the scene generator, renderer and evaluation code, to run and monitor experiments, and to draft and edit text. The authors checked the code, the results and every number and citation in the paper.
@@ -88,7 +97,7 @@ Other & \multicolumn{3}{l}{\footnotesize moves: 91 right, 75 left, 34 opposite; 
 \bottomrule
 \end{tabular}
 \end{table}
-\noindent Rearrangement: nearest/second-nearest distance ratio at least 1.4 (median 1.6). Physical outcome: 133 three-block and 67 four-block stacks; unstable stacks fail at the base (69) or at the second block (31). The misleading state is another viewpoint with the opposite answer (viewpoint), a swap with a different partner and a different answer (rearrangement), or the opposite outcome (physical outcome; for stable stacks, the top block falls towards its overhang).
+\noindent Rearrangement: nearest/second-nearest distance ratio at least 1.4 (median 1.6). Physical outcome: 133 three-block and 67 four-block stacks; unstable stacks fail at the base (69) or at the second block (31). The misleading state is another viewpoint with the opposite answer (viewpoint), a swap with a different partner and a different answer (rearrangement), or the opposite outcome (physical outcome; for stable stacks, the top block falls toward its overhang). Rearrangement answers are skewed toward cylinders (41\% of answers but 33\% of options), so a guesser that prefers cylinders would score about 35\% rather than 29\%.
 
 \section{Additional results}
 \label{sec:supp-results}
@@ -96,10 +105,16 @@ Other & \multicolumn{3}{l}{\footnotesize moves: 91 right, 75 left, 34 opposite; 
 \paragraph{Egocentric bias by model.} Viewpoint accuracy (\%) on questions whose answer is the \emph{same} from the current view and from the new one, and on those where it \emph{flips}. All models answer from the current view when given only the original image; the imagined view alone resolves this for the 7--8B models, and adding the original image back brings much of the bias back.
 \begin{center}\small\input{tables/supp_egocentric}\end{center}
 
-\paragraph{Prompt robustness.} Qwen3-VL-8B on the first 50 questions per task, with the original prompt and with a paraphrase that rewords every instruction and lists the options in reverse order. Individual answers change, most on rearrangement, but the oracle helps and the misleading state hurts under both wordings.
+\paragraph{Prompt robustness.} Qwen3-VL-8B on the first 50 questions per task, with the original prompt and with a paraphrase that rewords every instruction and lists the options in reverse order. Individual answers change, most on rearrangement. Under both wordings the oracle helps on all three tasks, and the misleading state hurts on viewpoint and physical outcome but not on rearrangement. The image-only baseline on physical outcome also moves (68 to 52), so at $n=50$ these are coarse checks.
 \begin{center}\small\input{tables/supp_prompt}\end{center}
 
-\begin{minipage}{\linewidth}
+\paragraph{Stability controls.} In the main runs, the oracle for stable stacks and the misleading image for falling stacks are copies of the original. We therefore re-render both second images from a camera turned by 20$^\circ$ around the stack (same scenes, same prompt), so that no second image equals the original. Accuracy (\%) on stable (``stands'') and falling (``falls'') stacks, 100 each:
+\begin{center}\small\input{tables/supp_camturn}\end{center}
+A model that only checked whether the picture changed would answer ``falls over'' for every turned image; the Qwen models do not. As a second check, Qwen3-VL-8B's own reconstructions that show a standing stack (189 of 200) differ from the original in about 6\% of the pixels (range 2.0--11.9\%; a pixel counts as changed when a channel differs by more than 30/255), against about 9\% for the fallen-block oracles (range 6.5--12.3\%). Qwen3-VL-8B says ``stays standing'' for 97.4\% of these reconstructions, and for 94.9\% of the 59 that change as much as some fallen-block oracle; in that shared range, the fallen-block oracles get ``falls over'' 85.9\% of the time. The same amount of change thus leads to opposite answers, depending on what the image shows.
+
+\paragraph{Text traces.} The rearrangement count in \cref{sec:results} is a keyword match on Qwen3-VL-8B's replies: a trace counts when it refers to the swap partner's original position (\eg ``where the green sphere was'', ``the original position of the green sphere''); 198 of 200 do.
+
+\medskip\noindent\begin{minipage}{\linewidth}
 \paragraph{A smaller model.} Qwen2.5-VL-3B (bf16) stays near chance in every condition, including the imagined state alone, so it cannot benefit from imagination.
 \begin{center}\small\input{tables/supp_small}\end{center}
 \end{minipage}

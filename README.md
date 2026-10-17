@@ -75,7 +75,12 @@ python scripts/evaluate.py data/v1 --backend hf --model $M --quant 4 --condition
 python scripts/evaluate.py data/v1 --backend hf --model $M --quant 4 \
     --conditions direct oracle wrong --limit 50 --prompt-variant alt
 
-# 5. tables, figures, statistics, audit
+# 5. stability controls: second images from a camera turned 20 degrees, and pixel-change checks
+python scripts/camera_turn.py data/v1 data/v1_camturn --deg 20
+python scripts/evaluate.py data/v1_camturn --backend hf --model $M --quant 4 --conditions oracle wrong --out results_camturn
+python scripts/extra_checks.py           # -> results/extra_checks.json (read by audit_numbers.py)
+
+# 6. tables, figures, statistics, audit
 python scripts/make_table.py results/v1 paper/tables/main.tex \
     --models Qwen3-VL-8B-Instruct-q4 Qwen2.5-VL-7B-Instruct-q4 InternVL3-8B-hf-q4
 python scripts/make_supp_tables.py paper/tables/supp.tex
@@ -101,6 +106,8 @@ JSONL); `data/` is not, since step 1 regenerates it exactly.
 | `scripts/degrade.py` | oracles with Gaussian position noise |
 | `scripts/score.py` | accuracy with bootstrap CIs, follow-the-image rates, diagnostic splits |
 | `scripts/analyze_imagined.py` | perception vs. reading errors on an imagined second image |
+| `scripts/camera_turn.py` | stability control: oracle and misleading images from a turned camera |
+| `scripts/extra_checks.py` | pixel change of stability second images; keyword count on Text traces |
 | `scripts/significance.py` | exact McNemar tests, Holm-corrected |
 | `scripts/make_table.py`, `scripts/make_supp_tables.py` | LaTeX tables from the results |
 | `scripts/fig_*.py` | paper figures |

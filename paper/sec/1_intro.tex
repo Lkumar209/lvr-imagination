@@ -1,13 +1,13 @@
 \section{Introduction}
 \label{sec:intro}
 
-Asked what happens if you walk around a table, or whether a leaning stack of blocks will hold, people tend to picture the result rather than reason it out in words. Vision-language models (VLMs) usually do the opposite: they encode the image once and carry out every intermediate step in text. A growing line of work gives models a visual intermediate state instead, by drawing sketches~\cite{hu2024sketchpad}, by producing latent visual tokens~\cite{yang2026mirage,li2025lvr}, or by supplying extra views~\cite{wang2026mindcube}. These methods change many things at once (training data, architecture, compute), so it is hard to tell whether the visual state itself is what helps.
+Asked what happens if you walk around a table, or whether a leaning stack of blocks will hold, people tend to picture the result rather than reason it out in words. Vision-language models (VLMs) usually do the opposite: they encode the image once and carry out every intermediate step in text. Several recent methods give models a visual intermediate state instead, by drawing sketches~\cite{hu2024sketchpad}, by producing latent visual tokens~\cite{yang2026mirage,li2025lvr}, or by supplying extra views~\cite{wang2026mindcube}. These methods change many things at once (training data, architecture, compute), so it is hard to tell whether the visual state itself is what helps.
 
 We isolate that one factor. We build scenes in which the imagined state a question asks about can be \emph{rendered exactly} (\cref{fig:teaser}): the view from where the viewer would stand, the scene after two objects trade places, or the aftermath of releasing a stack of blocks. We then hold the model, the question and the prompt fixed and vary only the second image the model receives. This lets us ask three questions:
 \begin{enumerate}[nosep,leftmargin=*]
   \item \textbf{How much would perfect imagination help?} An oracle image gives an upper bound for any method that produces a visual intermediate state.
-  \item \textbf{Does the model actually use it?} Replacing the oracle with a misleading or an unrelated image tests whether the visual state plays a causal role, rather than just adding input.
+  \item \textbf{Does the model actually use it?} Replacing the oracle with a misleading or an unrelated image tests whether the answer depends on what the visual state shows, rather than on having a second image at all.
   \item \textbf{How faithful must imagination be, and how close do models get on their own?} We degrade the oracle with controlled position noise, and we let the model build its own imagined state by writing down the scene and rendering it.
 \end{enumerate}
 
-On three open VLMs from two families, a perfect imagined state raises accuracy on every task (by up to 30 points), a misleading one drops it far below the image-only baseline, and models gain little from their own imagined states because they misperceive spatial relations. We also find that the seen image competes with the imagined one, which removes 40--70\% of the benefit on the questions where imagination matters most.
+Across three open VLMs, the answers to these questions differ by task, and the seen image turns out to compete with the imagined one (\cref{sec:results}).

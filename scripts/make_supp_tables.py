@@ -102,9 +102,29 @@ def small_model_table():
     return "\n".join(out)
 
 
+def camturn_table():
+    """Physical outcome: second image from the original camera vs. one turned by 20 degrees."""
+    out = [r"\begin{tabular}{llcccccc}", r"\toprule",
+           r" & & \multicolumn{3}{c}{Oracle} & \multicolumn{3}{c}{Misl.} \\",
+           r"\cmidrule(lr){3-5}\cmidrule(lr){6-8}",
+           r"Model & Camera & stands & falls & all & stands & falls & all \\", r"\midrule"]
+    for name, m in MODELS[:3]:
+        for cam, d in (("same", f"results/v1/{m}"), ("turned", f"results_camturn/v1_camturn/{m}")):
+            cells = []
+            for c in ("oracle", "wrong"):
+                R = {i: r for i, r in load(f"{d}/{c}.jsonl").items() if r["task"] == "stability"}
+                for ans in ("stays standing", "falls over"):
+                    cells.append(fmt(acc(R, {i for i, r in R.items() if r["answer"] == ans})))
+                cells.append(fmt(acc(R)))
+            out.append(f"{name if cam == 'same' else ''} & {cam} & " + " & ".join(cells) + r" \\")
+    out += [r"\bottomrule", r"\end{tabular}"]
+    return "\n".join(out)
+
+
 def main(out):
     parts = {"significance": significance_table(), "prompt": prompt_table(),
-             "egocentric": egocentric_table(), "small": small_model_table()}
+             "egocentric": egocentric_table(), "small": small_model_table(),
+             "camturn": camturn_table()}
     os.makedirs(os.path.dirname(out), exist_ok=True)
     for k, v in parts.items():
         open(out.replace(".tex", f"_{k}.tex"), "w").write(v + "\n")

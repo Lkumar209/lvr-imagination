@@ -35,7 +35,7 @@ def acc(rows):
 
 def main():
     Q = {r["id"]: r for r in map(json.loads, open("data/v1_figs/questions.jsonl"))}
-    for d in glob.glob("results*/**/v1/*", recursive=True) + glob.glob("results/v1/*"):
+    for d in glob.glob("results*/**/v1/*", recursive=True) + glob.glob("results/v1/*") + glob.glob("results_camturn/v1_camturn/*"):
         if not os.path.isdir(d):
             continue
         m = d.replace("results", "R")
@@ -108,6 +108,10 @@ def main():
             for name, xs in (("implied_right", right), ("follows", follow), ("acc|right", ar), ("acc|wrong", aw)):
                 if xs:
                     add(100 * sum(xs) / len(xs), f"recon:{tag}/{name}/{t}")
+    if os.path.exists("results/extra_checks.json"):            # scripts/extra_checks.py
+        for k, v in json.load(open("results/extra_checks.json")).items():
+            for x in (v if isinstance(v, list) else [v]):
+                add(float(x), f"extra/{k}")
     tex = ""
     for f in ["0_abstract", "1_intro", "2_related", "3_benchmark", "5_results", "6_discussion", "7_supp"]:
         tex += open(f"paper/sec/{f}.tex").read() + "\n"
