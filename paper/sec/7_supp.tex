@@ -70,6 +70,8 @@ horizontal position of its center in meters, from left (negative) to right
 \endgroup
 Answers are parsed from the last \texttt{Answer:} line, falling back to the last option mentioned anywhere in the reply. Decoding is greedy; the answer limit is 48 new tokens. For \emph{cot} it is 1{,}024; answers that reached it were regenerated with 2{,}048, which under greedy decoding is equivalent to a 2{,}048 limit throughout. For Qwen3-VL-8B, 35 of the first 300 \emph{cot} answers reached 1{,}024 tokens; regenerating them left the number of correct answers unchanged (11), and 14 of them reached 2{,}048 as well, mostly by repeating themselves.
 
+\paragraph{Use of language models.} Besides the VLMs under study, an LLM-based coding assistant was used to help implement the scene generator, renderer and evaluation code, to run and monitor experiments, and to draft and edit text. The authors checked the code, the results and every number and citation in the paper.
+
 \section{Dataset details}
 \label{sec:supp-data}
 \begin{table}[h]
