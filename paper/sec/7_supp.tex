@@ -99,19 +99,21 @@ Other & \multicolumn{3}{l}{\footnotesize moves: 91 right, 75 left, 34 opposite; 
 \paragraph{Prompt robustness.} Qwen3-VL-8B on the first 50 questions per task, with the original prompt and with a paraphrase that rewords every instruction and lists the options in reverse order. Individual answers change, most on rearrangement, but the oracle helps and the misleading state hurts under both wordings.
 \begin{center}\small\input{tables/supp_prompt}\end{center}
 
+\begin{minipage}{\linewidth}
 \paragraph{A smaller model.} Qwen2.5-VL-3B (bf16) stays near chance in every condition, including the imagined state alone, so it cannot benefit from imagination.
 \begin{center}\small\input{tables/supp_small}\end{center}
+\end{minipage}
 
 \paragraph{Rescaled reconstructions.} Rescaling Qwen3-VL-8B's reconstructed layout about its centroid so that it spans the scene (no model calls; same replies) changes accuracy from 52.0 to 54.0 on viewpoint and from 36.0 to 41.5 on rearrangement, and the share of reconstructions that imply the correct viewpoint answer from 64.5\% to 65.6\%: the errors are in the relative layout, not the overall scale.
 
 \paragraph{Significance tests.} Exact McNemar tests on the questions both conditions share, Holm-corrected over all rows ($^*$: $p_{\mathrm{Holm}}<0.05$). A and B are the accuracies of the first and second condition named.
 {\small\input{tables/supp_significance}}
 
+\clearpage
 \section{More examples}
 \label{sec:supp-examples}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figs/supp_examples.pdf}
-  \caption{\textbf{Two questions per task}, with Qwen3-VL-8B's actual answer under each second image (``seen'': the original image only). The examples include failures: on rearrangement the model answers wrongly even with the oracle, and its own reconstructions compress the scene into a cluster (viewpoint) or into a vertical, stable-looking stack (physical outcome).}
+\begin{center}
+  \includegraphics[width=0.86\linewidth]{figs/supp_examples.pdf}
+  \captionof{figure}{\textbf{Two questions per task}, with Qwen3-VL-8B's actual answer under each second image (``seen'': the original image only). The examples include failures: on rearrangement the model answers wrongly even with the oracle, and its own reconstructions compress the scene into a cluster (viewpoint) or into a vertical, stable-looking stack (physical outcome).}
   \label{fig:supp-examples}
-\end{figure}
+\end{center}
