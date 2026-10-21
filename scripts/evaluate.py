@@ -151,8 +151,14 @@ class HF:
                 BitsAndBytesConfig(load_in_8bit=True) if quant == "8" else
                 BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
                                    bnb_4bit_compute_dtype=torch.bfloat16))
+        if torch.cuda.device_count() > 1:            # split a large model over the visible GPUs
+            kw["device_map"] = "auto"
+            if os.environ.get("MAX_GPU_MEM"):          # e.g. 16GiB, to leave room on shared cards
+                kw["max_memory"] = {i: os.environ["MAX_GPU_MEM"] for i in range(torch.cuda.device_count())}
+        else:
+            kw["device_map"] = "cuda"
         self.model = AutoModelForImageTextToText.from_pretrained(
-            model, torch_dtype=torch.bfloat16, device_map="cuda", **kw).eval()
+            model, torch_dtype=torch.bfloat16, **kw).eval()
 
     def __call__(self, images, text, max_tokens):
         from PIL import Image
