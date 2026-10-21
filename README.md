@@ -1,9 +1,7 @@
 # Would Imagination Help?
 
 An oracle study of visual intermediate states for spatial and physical reasoning
-in VLMs. Paper for the **Latent Visual Reasoning workshop @ WACV 2027**
-(non-archival, 4 pages + references; arXiv after acceptance). Deadline
-**Oct 18, 2026, 07:00 EDT** via OpenReview. Draft: `paper/main.pdf`.
+in VLMs (Latent Visual Reasoning workshop @ WACV 2027). Paper source in `paper/`.
 
 **Question.** VLMs reason about change ("what if I walk around?", "what if these
 swap?", "will this fall?") in text. If a model could *see* the changed scene
