@@ -89,8 +89,8 @@ python scripts/fig_noise.py data/v1 paper/figs/noise.pdf --models Qwen3-VL-8B-In
 python scripts/audit_numbers.py          # every number in the prose vs. the results
 ```
 
-`scripts/run_model.sh` is the GPU2 wrapper we used for step 2 (cluster paths
-inside; adjust before use). Results are committed under `results*/` (small
+`scripts/run_model.sh` wraps step 2 for one model on one GPU (set `HF_HOME`
+and `PY` for your machine). Results are committed under `results*/` (small
 JSONL); `data/` is not, since step 1 regenerates it exactly.
 
 ## Code
@@ -125,3 +125,9 @@ JSONL); `data/` is not, since step 1 regenerates it exactly.
   alone, models answer with a fixed prior, so `oracle_only` is not interpreted
   on `stability`.
 - Main models run with 4-bit NF4 weights.
+
+## License
+
+Code: MIT (see `LICENSE`). Generated benchmark data (questions, renders) and the
+model outputs under `results*/`: CC BY 4.0. The scenes are fully synthetic and
+contain no human-derived or personal data.
