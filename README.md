@@ -59,6 +59,10 @@ python scripts/evaluate.py data/v1 --backend hf --model $M --quant 4 --condition
 python scripts/evaluate.py data/v1 --backend hf --model $M --quant 4 --conditions cot --limit 100 --max-tokens 2048
 #    (Qwen3-VL-8B swap CoT on all 200: add --tasks swap without --limit)
 
+#    larger model (Qwen/Qwen3-VL-32B-Instruct, 4-bit, split over two 24 GB cards; reviewer request)
+CUDA_VISIBLE_DEVICES=0,1 MAX_GPU_MEM=15GiB python scripts/evaluate.py data/v1 --backend hf \
+    --model Qwen/Qwen3-VL-32B-Instruct --quant 4 --conditions direct oracle oracle_only wrong shuffled
+
 # 3. degraded oracles and rescaled reconstructions (Qwen models)
 python scripts/degrade.py data/v1 --sigmas 0 0.1 0.25 0.5 1.0
 for s in 0 0.1 0.25 0.5 1; do
