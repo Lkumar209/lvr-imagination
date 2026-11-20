@@ -1,7 +1,9 @@
 # Would Imagination Help?
 
 An oracle study of visual intermediate states for spatial and physical reasoning
-in VLMs (Latent Visual Reasoning workshop @ WACV 2027). Paper source in `paper/`.
+in VLMs (Latent Visual Reasoning workshop @ WACV 2027, oral). Paper with supplementary
+material: [`Kumar_Xu_LVR2027_full_with_supplementary.pdf`](Kumar_Xu_LVR2027_full_with_supplementary.pdf).
+LaTeX source in `paper/`.
 
 **Question.** VLMs reason about change ("what if I walk around?", "what if these
 swap?", "will this fall?") in text. If a model could *see* the changed scene
@@ -82,9 +84,13 @@ python scripts/camera_turn.py data/v1 data/v1_camturn --deg 20
 python scripts/evaluate.py data/v1_camturn --backend hf --model $M --quant 4 --conditions oracle wrong --out results_camturn
 python scripts/extra_checks.py           # -> results/extra_checks.json (read by audit_numbers.py)
 
+# 5b. interference controls on viewpoint (why the original image lowers accuracy next to the oracle)
+python scripts/evaluate.py data/v1 --backend hf --model $M --quant 4 --tasks viewpoint \
+    --conditions oracle_rev oracle_explicit oracle_dup oracle_irrel
+
 # 6. tables, figures, statistics, audit
 python scripts/make_table.py results/v1 paper/tables/main.tex \
-    --models Qwen3-VL-8B-Instruct-q4 Qwen2.5-VL-7B-Instruct-q4 InternVL3-8B-hf-q4
+    --models Qwen3-VL-8B-Instruct-q4 Qwen2.5-VL-7B-Instruct-q4 InternVL3-8B-hf-q4 Qwen3-VL-32B-Instruct-q4
 python scripts/make_supp_tables.py paper/tables/supp.tex
 python scripts/significance.py --out paper/tables/significance.txt
 python scripts/fig_noise.py data/v1 paper/figs/noise.pdf --models Qwen3-VL-8B-Instruct-q4 Qwen2.5-VL-7B-Instruct-q4

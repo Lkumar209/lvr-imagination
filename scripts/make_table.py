@@ -2,7 +2,8 @@
 Rows: model x task. Columns: second input. Best non-misleading cell per row in bold.
 
     python scripts/make_table.py results/v1 paper/tables/main.tex \\
-        --models Qwen3-VL-8B-Instruct-q4 Qwen2.5-VL-7B-Instruct-q4 InternVL3-8B-hf-q4
+        --models Qwen3-VL-8B-Instruct-q4 Qwen2.5-VL-7B-Instruct-q4 InternVL3-8B-hf-q4 \\
+                 Qwen3-VL-32B-Instruct-q4
 """
 import argparse
 import json
@@ -12,7 +13,7 @@ COLS = [("direct", "Img."), ("cot", "Text"), ("recon", "Own"), ("oracle", "Oracl
         ("shuffled", "Unrel."), ("wrong", "Misl.")]
 TASKS = [("viewpoint", "View"), ("swap", "Swap"), ("stability", "Stab.")]
 SHORT = {"Qwen3-VL-8B-Instruct-q4": "Qwen3-VL-8B", "Qwen2.5-VL-7B-Instruct-q4": "Qwen2.5-VL-7B",
-         "InternVL3-8B-hf-q4": "InternVL3-8B"}
+         "InternVL3-8B-hf-q4": "InternVL3-8B", "Qwen3-VL-32B-Instruct-q4": "Qwen3-VL-32B"}
 
 
 def load(path):

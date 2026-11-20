@@ -5,9 +5,9 @@ Asked what happens if you walk around a table, or whether a leaning stack of blo
 
 We isolate that one factor. We build scenes in which the imagined state a question asks about can be \emph{rendered exactly} (\cref{fig:teaser}): the view from where the viewer would stand, the scene after two objects trade places, or the aftermath of releasing a stack of blocks. We then hold the model, the question and the prompt fixed and vary only the second image the model receives. This lets us ask three questions:
 \begin{enumerate}[nosep,leftmargin=*]
-  \item \textbf{How much would perfect imagination help?} An oracle image gives an upper bound for any method that produces a visual intermediate state.
+  \item \textbf{How much would perfect imagination help?} An exact rendering of the imagined state (the oracle) is a reference point for methods that produce a visual intermediate state, under our rendering and prompt protocol.
   \item \textbf{Does the model actually use it?} Replacing the oracle with a misleading or an unrelated image tests whether the answer depends on what the visual state shows, rather than on having a second image at all.
   \item \textbf{How faithful must imagination be, and how close do models get on their own?} We degrade the oracle with controlled position noise, and we let the model build its own imagined state by writing down the scene and rendering it.
 \end{enumerate}
 
-Across three open VLMs, the answers to these questions differ by task, and the seen image turns out to compete with the imagined one (\cref{sec:results}).
+Across four open VLMs, the answers to these questions differ by task, and in the 7--8B models the seen image competes with the imagined one (\cref{sec:results}). Code, data and the supplementary material (prompts, further controls, all significance tests) are at \url{https://github.com/Lkumar209/lvr-imagination}.

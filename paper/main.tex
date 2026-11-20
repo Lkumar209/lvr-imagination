@@ -7,8 +7,8 @@
 %%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
 % \usepackage[review,algorithms]{wacv}      % To produce the REVIEW version for the algorithms track
 % \usepackage[review,applications]{wacv}      % To produce the REVIEW version for the applications track
-\usepackage[review,datasets]{wacv}      % Evaluations & Dataset track: a benchmark/evaluation study
-% \usepackage{wacv}              % To produce the CAMERA-READY version
+% \usepackage[review,datasets]{wacv}      % Evaluations & Dataset track: a benchmark/evaluation study
+\usepackage{wacv}              % To produce the CAMERA-READY version
 %\usepackage[pagenumbers]{wacv} % To force page numbers, e.g. for an arXiv version
 
 % Import additional packages in the preamble file, before hyperref
@@ -25,7 +25,7 @@
 \usepackage[pagebackref,breaklinks,colorlinks,allcolors=wacvblue]{hyperref}
 
 %%%%%%%%% PAPER ID  - PLEASE UPDATE
-\def\wacvPaperID{*****} % *** Enter the WACV Paper ID here
+\def\wacvPaperID{31} % *** Enter the WACV Paper ID here
 \def\confName{WACV}
 \def\confYear{2027}
 
@@ -34,7 +34,8 @@
 \title{Would Imagination Help? An Oracle Study of Visual Intermediate States\\for Spatial and Physical Reasoning in VLMs}
 
 %%%%%%%%% AUTHORS - PLEASE UPDATE
-\author{Anonymous WACV LVR Workshop Submission}
+\author{Laxya Kumar\qquad Min Xu\\
+Carnegie Mellon University}
 
 \begin{document}
 % teaser directly under the title block, as in CVPR-style papers
@@ -42,7 +43,7 @@
 \begin{center}
   \vspace{-1.5em}
   \includegraphics[width=\linewidth]{figs/teaser.pdf}
-  \captionof{figure}{\textbf{Each question asks the model to picture a change it cannot see.} Because our scenes are rendered from an exact 3D description, we can render the state the question asks about (``imagined (oracle)''), a plausible but misleading version of it, or the model's own reconstruction, and give any of them back to the model as a second image.}
+  \captionof{figure}{\textbf{Each question asks the model to picture a change it cannot see.} Our scenes are exact 3D descriptions, so we can render the state the question asks about (``imagined (oracle)''), a misleading version of it, or the model's own reconstruction, and give it to the model as a second image.}
   \label{fig:teaser}
   \vspace{1em}
 \end{center}}]
@@ -58,11 +59,13 @@
     \bibliography{main}
 }
 
-% supplementary material: after the references, does not count towards the page limit
+% supplementary material: after the references. Build without it: latexmk -pdf -usepretex='\def\nosupp{}' main
+\ifdefined\nosupp\else
 \clearpage
 \onecolumn
 \appendix
 \input{sec/7_supp}
+\fi
 
 
 \end{document}

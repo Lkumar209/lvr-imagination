@@ -13,7 +13,8 @@ from math import comb
 
 MODELS = {"Qwen3-VL-8B": "results/v1/Qwen3-VL-8B-Instruct-q4",
           "Qwen2.5-VL-7B": "results/v1/Qwen2.5-VL-7B-Instruct-q4",
-          "InternVL3-8B": "results/v1/InternVL3-8B-hf-q4"}
+          "InternVL3-8B": "results/v1/InternVL3-8B-hf-q4",
+          "Qwen3-VL-32B": "results/v1/Qwen3-VL-32B-Instruct-q4"}
 TASKS = ["viewpoint", "swap", "stability"]
 
 

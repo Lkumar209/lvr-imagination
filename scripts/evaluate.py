@@ -9,6 +9,11 @@ Conditions (images given, in order):
   shuffled    original + imagined of another question of the same task
   recon       original + the model's own reconstruction, transformed and rendered
               (scripts/recon.py first; if that failed for a question, falls back to direct)
+Interference controls (why does the original lower accuracy next to the oracle?):
+  oracle_rev      imagined + original         same images as oracle, order reversed
+  oracle_explicit original + imagined         oracle, plus "answer from the second image"
+  oracle_dup      imagined + imagined         two images, but no original
+  oracle_irrel    original of another question + imagined   two images, unrelated first one
 Every two-image condition uses the same wording, so the model cannot tell oracle,
 wrong and shuffled apart from the prompt.
 
@@ -30,7 +35,8 @@ import random
 import re
 import time
 
-CONDITIONS = ["direct", "cot", "oracle", "oracle_only", "wrong", "shuffled", "recon"]
+CONDITIONS = ["direct", "cot", "oracle", "oracle_only", "wrong", "shuffled", "recon",
+              "oracle_rev", "oracle_explicit", "oracle_dup", "oracle_irrel"]
 
 SECOND_IMAGE = {
     "viewpoint": "The second image shows the scene from the new viewpoint described in the question.",
@@ -59,6 +65,9 @@ ALT_SECOND_IMAGE = {
     "swap": "Image 2 is a rendering of this scene once the two named objects have swapped positions.",
     "stability": "Image 2 is a rendering of this scene after the blocks were let go and stopped moving.",
 }
+FIRST_IMAGE = {k: v.replace("The second image", "The first image") for k, v in SECOND_IMAGE.items()}
+BOTH_IMAGES = {k: v.replace("The second image shows", "Both images show") for k, v in SECOND_IMAGE.items()}
+EXPLICIT = "Answer about the scene as it appears in the second image."
 ALT_ONLY_IMAGE = {k: v.replace("Image 2 is a rendering of this scene", "This image is a rendering of a scene")
                   for k, v in ALT_SECOND_IMAGE.items()}
 
@@ -76,9 +85,17 @@ def build(item, condition, root, shuffle_pool, recon=None, variant="default"):
         images, intro = [img("original")], ("Here is a rendered scene." if alt else "The image shows a scene.")
     elif condition == "oracle_only":
         images, intro = [img("imagined")], (ALT_ONLY_IMAGE if alt else ONLY_IMAGE)[task]
+    elif condition == "oracle_rev":
+        images = [img("imagined"), img("original")]
+        intro = FIRST_IMAGE[task] + " The second image shows the current scene."
+    elif condition == "oracle_dup":
+        images, intro = [img("imagined"), img("imagined")], BOTH_IMAGES[task]
     else:
-        if condition == "oracle":
+        first = img("original")
+        if condition in ("oracle", "oracle_explicit"):
             second = img("imagined")
+        elif condition == "oracle_irrel":
+            first, second = img("original", shuffle_pool[item["id"]]), img("imagined")
         elif condition == "wrong":
             second = img("wrong")
         elif condition == "shuffled":
@@ -87,9 +104,11 @@ def build(item, condition, root, shuffle_pool, recon=None, variant="default"):
             second = os.path.join(root, recon[item["id"]])
         else:
             raise ValueError(condition)
-        images = [img("original"), second]
+        images = [first, second]
         intro = ("Image 1 is the scene as it is now. " + ALT_SECOND_IMAGE[task] if alt else
                  "The first image shows the current scene. " + SECOND_IMAGE[task])
+        if condition == "oracle_explicit":
+            intro += " " + EXPLICIT
     if condition == "cot":
         tail = f"{COT[task]} End your reply with a final line of the form 'Answer: <option>'."
     elif alt:
@@ -280,7 +299,7 @@ def main():
                     rec["recon_failed"] = not recon.get(it["id"])
                     if cond == "recon" and not rec["recon_failed"]:
                         rec["recon_image"] = recon[it["id"]]
-                if cond == "shuffled":
+                if cond in ("shuffled", "oracle_irrel"):
                     rec["partner"] = pool[it["id"]]["id"]
                     pa = pool[it["id"]]["answer"]      # only meaningful when it is one of our options
                     rec["partner_answer"] = pa if pa in it["choices"] else None

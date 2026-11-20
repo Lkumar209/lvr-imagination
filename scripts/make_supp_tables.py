@@ -10,7 +10,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 import significance as sig  # noqa: E402
 
 MODELS = [("Qwen3-VL-8B", "Qwen3-VL-8B-Instruct-q4"), ("Qwen2.5-VL-7B", "Qwen2.5-VL-7B-Instruct-q4"),
-          ("InternVL3-8B", "InternVL3-8B-hf-q4"), ("Qwen2.5-VL-3B", "Qwen2.5-VL-3B-Instruct")]
+          ("InternVL3-8B", "InternVL3-8B-hf-q4"), ("Qwen3-VL-32B", "Qwen3-VL-32B-Instruct-q4"),
+          ("Qwen2.5-VL-3B", "Qwen2.5-VL-3B-Instruct")]
+INTERF = [("oracle", "Img.\\ + oracle"), ("oracle_rev", "Reversed"), ("oracle_explicit", "Explicit"),
+          ("oracle_irrel", "Unrel.\\ + oracle"), ("oracle_dup", "Oracle twice"), ("oracle_only", "Oracle only")]
 TASKS = [("viewpoint", "View"), ("swap", "Swap"), ("stability", "Stab.")]
 
 
@@ -30,7 +33,8 @@ def fmt(v):
 def significance_table():
     rows = []
     for model, d in sig.MODELS.items():
-        R = {c: sig.load(f"{d}/{c}.jsonl") for c in ("direct", "cot", "oracle", "oracle_only", "wrong", "shuffled", "recon")}
+        R = {c: sig.load(f"{d}/{c}.jsonl") for c in ("direct", "cot", "oracle", "oracle_only", "wrong", "shuffled", "recon",
+                                                     "oracle_rev", "oracle_explicit", "oracle_dup", "oracle_irrel")}
         for t in sig.TASKS:
             for name, a, b in (("Oracle $>$ Img.", "direct", "oracle"), ("Misl. $<$ Img.", "direct", "wrong"),
                                ("Oracle $>$ Unrel.", "shuffled", "oracle"), ("Text vs.\\ Img.", "direct", "cot"),
@@ -38,6 +42,8 @@ def significance_table():
                 rows.append(sig.compare(name, model, t, R[a], R[b]))
         flips = [i for i, r in R["direct"].items() if r["task"] == "viewpoint" and r["meta"].get("answer_flips_from_current")]
         rows.append(sig.compare("Imagined only $>$ both (flip)", model, "viewpoint", R["oracle"], R["oracle_only"], flips))
+        for c, name in INTERF[1:5]:
+            rows.append(sig.compare(f"{name} vs.\\ Img.\\ + oracle (flip)", model, "viewpoint", R["oracle"], R[c], flips))
         noise = sig.load(f"results_noise/s1/v1/{os.path.basename(d)}/recon.jsonl")
         rows.append(sig.compare("Oracle@1\\,m $>$ Img.", model, "viewpoint", R["direct"], noise))
         rows.append(sig.compare("Oracle@1\\,m $>$ Own", model, "viewpoint", R["recon"], noise))
@@ -88,6 +94,20 @@ def egocentric_table():
     return "\n".join(out)
 
 
+def interference_table():
+    """Viewpoint questions whose answer flips after moving: which part of the two-image input hurts?"""
+    out = [r"\begin{tabular}{l" + "c" * len(INTERF) + "}", r"\toprule",
+           "Model & " + " & ".join(n for _, n in INTERF) + r" \\", r"\midrule"]
+    for name, m in MODELS:
+        R = {c: load(f"results/v1/{m}/{c}.jsonl") for c, _ in INTERF}
+        if not R["oracle_rev"]:
+            continue
+        flip = {i for i, r in R["oracle"].items() if r["task"] == "viewpoint" and r["meta"].get("answer_flips_from_current")}
+        out.append(f"{name} & " + " & ".join(fmt(acc(R[c], flip)) for c, _ in INTERF) + r" \\")
+    out += [r"\bottomrule", r"\end{tabular}"]
+    return "\n".join(out)
+
+
 def small_model_table():
     m = "Qwen2.5-VL-3B-Instruct"
     conds = [("direct", "Img."), ("recon", "Own"), ("oracle", "Oracle"), ("oracle_only", "Oracle only"),
@@ -124,7 +144,7 @@ def camturn_table():
 def main(out):
     parts = {"significance": significance_table(), "prompt": prompt_table(),
              "egocentric": egocentric_table(), "small": small_model_table(),
-             "camturn": camturn_table()}
+             "camturn": camturn_table(), "interference": interference_table()}
     os.makedirs(os.path.dirname(out), exist_ok=True)
     for k, v in parts.items():
         open(out.replace(".tex", f"_{k}.tex"), "w").write(v + "\n")
